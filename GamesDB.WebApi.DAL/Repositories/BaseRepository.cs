@@ -20,35 +20,57 @@ namespace GamesDB.WebApi.DAL.Repositories
         }
         public async Task<bool> Add(T entity)
         {
-            await _context.Set<T>().AddAsync(entity);
-            await _context.SaveChangesAsync();
+            using (_context)
+            {
+                await _context.Set<T>().AddAsync(entity);
+                await _context.SaveChangesAsync();
+            }
 
             return true;
         }
 
         public async Task<bool> Delete(T entity)
         {
-             _context.Set<T>().Remove(entity);
-            await _context.SaveChangesAsync();
+            using (_context)
+            {
+                _context.Set<T>().Remove(entity);
+                await _context.SaveChangesAsync();
+            }
 
             return true;
         }
 
         public async Task<T> Get(int id)
         {
-            return await _context.Set<T>().FirstOrDefaultAsync(x => x.Id == id);
+            T entity;
+
+            using (_context)
+            {
+                entity = await _context.Set<T>().FirstOrDefaultAsync(x => x.Id == id);
+            }
+
+            return entity;
         }
 
         public async Task<IEnumerable<T>> GetAll()
         {
-            return await _context.Set<T>().ToListAsync();
+            IEnumerable<T> entityList;
+            using (_context)
+            {
+                entityList = await _context.Set<T>().ToListAsync();
+            }
+
+            return entityList;
         }
 
         public async Task<bool> Update(T entity)
         {
-            _context.Set<T>().Update(entity);
+            using (_context)
+            {
+                _context.Set<T>().Update(entity);
             await _context.SaveChangesAsync();
-
+            }
+                    
             return true;
         }
     }
