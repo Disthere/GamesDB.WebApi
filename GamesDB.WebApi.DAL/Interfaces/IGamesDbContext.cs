@@ -1,4 +1,4 @@
-﻿using GamesBaseAccess.Domain.GameAggregate;
+﻿using GamesDB.WebApi.Domain.Entities.GameAggregate;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

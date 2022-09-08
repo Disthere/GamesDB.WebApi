@@ -1,4 +1,4 @@
-﻿using GamesBaseAccess.Domain.GameAggregate;
+﻿using GamesDB.WebApi.Domain.Entities.GameAggregate;
 using GamesDB.WebApi.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,9 +17,6 @@ namespace GamesDB.WebApi.DAL
 
         public GamesDbContext(DbContextOptions<GamesDbContext> options)
             : base(options)
-        {
-            //Database.EnsureDeleted();
-            Database.EnsureCreated();
-        }
+        {  }
     }
 }

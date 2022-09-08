@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GamesBaseAccess.Domain.GameAggregate
+namespace GamesDB.WebApi.Domain.Entities.GameAggregate
 {
-   public class Genre
+   public class Genre : BaseEntity
     {
         public Genre()
         {
             this.Games = new List<Game>();
         }
-        public Guid Id { get; set; }
+        //public int Id { get; set; }
         public string Name { get; set; }
 
         public ICollection<Game> Games { get; set; }
