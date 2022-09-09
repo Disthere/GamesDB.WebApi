@@ -15,13 +15,14 @@ namespace GamesDB.WebApi.Service.ViewModels.GameAggregateViewModels
         public GameViewModel()
         {
             this.Genres = new List<GenreViewModel>();
+            this.BaseType = typeof(Game);
         }
         public int Id { get; set; }
         public string Title { get; set; }
         public int? DeveloperId { get; set; }
         public DeveloperViewModel Developer { get; set; }
         public ICollection<GenreViewModel> Genres { get; set; }
-
+       
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Game, GameViewModel>()

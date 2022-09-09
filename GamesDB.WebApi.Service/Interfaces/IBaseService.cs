@@ -8,16 +8,16 @@ using System.Threading.Tasks;
 
 namespace GamesDB.WebApi.Service.Interfaces
 {
-    public interface IBaseService<T>
+    public interface IBaseService<M,V>
     {
-        Task<IBaseResponse<T>> Add(T entity);
+        Task<IBaseResponse<V>> Add(V entity);
 
-        Task<IBaseResponse<T>> Update(T entity);
+        Task<IBaseResponse<V>> Update(V entity);
 
-        Task<IBaseResponse<T>> Delete(T entity);
+        Task<IBaseResponse<V>> Delete(V entity);
 
-        Task<IBaseResponse<T>> Get(int id);
+        Task<IBaseResponse<V>> Get(int id);
 
-        Task<IBaseResponse<IEnumerable<T>>> GetAll();
+        Task<IBaseResponse<IEnumerable<V>>> GetAll();
     }
 }

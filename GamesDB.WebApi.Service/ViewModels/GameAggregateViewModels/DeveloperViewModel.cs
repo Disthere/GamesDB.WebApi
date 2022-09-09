@@ -10,17 +10,17 @@ using AutoMapper;
 
 namespace GamesDB.WebApi.Service.ViewModels.GameAggregateViewModels
 {
-   public class DeveloperViewModel : BaseEntityViewModel, IMapWith<Developer>
+    public class DeveloperViewModel : BaseEntityViewModel, IMapWith<Developer>
     {
         public DeveloperViewModel()
         {
             this.Games = new List<GameViewModel>();
+            this.BaseType = typeof(Developer);
         }
         public int Id { get; set; }
         public string Name { get; set; }
-
         public ICollection<GameViewModel> Games { get; set; }
-
+        
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Developer, DeveloperViewModel>()

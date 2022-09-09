@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using GamesDB.WebApi.DAL.Interfaces;
 using GamesDB.WebApi.Domain.Entities;
+using GamesDB.WebApi.Domain.Enums;
 using GamesDB.WebApi.Domain.Response;
 using GamesDB.WebApi.Service.Interfaces;
 using GamesDB.WebApi.Service.ViewModels;
@@ -12,46 +13,84 @@ using System.Threading.Tasks;
 
 namespace GamesDB.WebApi.Service.Implementations
 {
-    public abstract class BaseService<T> : IBaseService<T> where T : BaseEntityViewModel
+    public abstract class BaseService<M, V> : IBaseService<M,V> where M : BaseEntity where V : BaseEntityViewModel
     {
-        //return _mapper.Map<V>(T);
+        public BaseService(IBaseRepository<M> baseRepository) =>
+            (_baseRepository) = (baseRepository);
+        
 
         private readonly IMapper _mapper;
-        private readonly BaseEntity _baseEntity;
-        private readonly T _baseEntityViewModel;
-        private readonly IBaseRepository<T> _baseRepository;
-        public BaseService(IBaseRepository<T> baseRepository)
+        private readonly IBaseRepository<M> _baseRepository;
+
+        public async Task<IBaseResponse<V>> Add(V entity)
         {
-            _baseRepository = baseRepository;
-            _baseEntity = _mapper.Map<BaseEntity>(_baseEntityViewModel);
+            var baseResponse = new BaseResponse<V>();
+
+            M addingObject = _mapper.Map<M>(entity);
+            try
+            {
+                await _baseRepository.Add(addingObject);
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<V>()
+                {
+                    Description = $"[Add] : {ex.Message}",
+                    StatusCode = RequestToDbErrorStatusCode.InternalServerError
+                };
+            }
+            return baseResponse;
         }
 
-        public Task<IBaseResponse<T>> Add(T entity)
-        {
-            var ma = _mapper.Map<BaseEntity>(entity);
-
-
-            throw new NotImplementedException();
-        }
-
-        public Task<IBaseResponse<T>> Delete(T entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IBaseResponse<T>> Get(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IBaseResponse<IEnumerable<T>>> GetAll()
+        public Task<IBaseResponse<V>> Delete(V entity)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IBaseResponse<T>> Update(T entity)
+        public async Task<IBaseResponse<V>> Get(int id)
+        {
+            var baseResponse = new BaseResponse<V>();
+
+            try
+            {
+                var extractableObject = await _baseRepository.Get(id);
+
+                if (extractableObject == null)
+                {
+                    baseResponse.Description = "Object not found";
+                    baseResponse.StatusCode = RequestToDbErrorStatusCode.NotFound;
+                    return baseResponse;
+                }
+
+                baseResponse.Data = _mapper.Map<V>(extractableObject); ;
+
+                return baseResponse;
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<V>()
+                {
+                    Description = $"[GetById] : {ex.Message}",
+                    StatusCode = RequestToDbErrorStatusCode.InternalServerError,
+                };
+            }
+        }
+
+        public Task<IBaseResponse<IEnumerable<V>>> GetAll()
         {
             throw new NotImplementedException();
         }
+
+        public Task<IBaseResponse<V>> Update(V entity)
+        {
+            throw new NotImplementedException();
+        }
+        //public BaseService(IBaseRepository<T> baseRepository)
+        //{
+        //    _baseRepository = baseRepository;
+        //    _baseEntity = _mapper.Map<BaseEntity>(_baseEntityViewModel);
+        //}var ma = _mapper.Map<BaseEntity>(entity);
+
+
     }
 }
