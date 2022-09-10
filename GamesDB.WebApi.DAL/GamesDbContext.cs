@@ -19,9 +19,13 @@ namespace GamesDB.WebApi.DAL
             : base(options)
         {  }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            optionsBuilder.UseSqlite("Filename=Games.db");
+            base.OnModelCreating(builder);
         }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlite("Filename=Games.db");
+        //}
     }
 }

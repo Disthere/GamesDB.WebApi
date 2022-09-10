@@ -1,12 +1,15 @@
+using AutoMapper;
 using GamesDB.WebApi.DAL;
-using GamesDB.WebApi.DAL.Common.Mappings;
 using GamesDB.WebApi.DAL.Interfaces;
 using GamesDB.WebApi.DAL.Repositories;
 using GamesDB.WebApi.DAL.Repositories.GameAggregate;
 using GamesDB.WebApi.Domain.Entities;
+using GamesDB.WebApi.Domain.Entities.GameAggregate;
 using GamesDB.WebApi.Service.Implementations;
 using GamesDB.WebApi.Service.Interfaces;
+using GamesDB.WebApi.Service.Mapping;
 using GamesDB.WebApi.Service.ViewModels;
+using GamesDB.WebApi.Service.ViewModels.GameAggregateViewModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -36,15 +39,11 @@ namespace GamesDB.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAutoMapper(config =>
-            {
-                config.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
-                config.AddProfile(new AssemblyMappingProfile(typeof(IGamesDbContext).Assembly));
-            });
-
-            services.AddEntityFrameworkSqlite().AddDbContext<GamesDbContext>();
-            //services.AddScoped<IBaseRepository<BaseEntity>, BaseRepository<BaseEntity>>();
-            //services.AddScoped<IBaseService<BaseEntity,BaseEntityViewModel>, BaseService<BaseEntity, BaseEntityViewModel>>();
+            
+            services.AddAutoMapper(typeof(GameMappingProfile));
+            services.AddDbConnection(Configuration);
+            services.AddScoped<IGameService, GameService>();
+            services.AddScoped<IBaseRepository<Game>, GameRepository>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

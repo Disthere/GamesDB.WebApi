@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GamesDB.WebApi.Service.Interfaces
 {
-    public interface IBaseService<M,V>
+    public interface IBaseService<V>
     {
         Task<IBaseResponse<V>> Add(V entity);
 

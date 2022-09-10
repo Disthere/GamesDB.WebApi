@@ -11,12 +11,10 @@ namespace GamesDB.WebApi.DAL.Repositories
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
     {
-        //private readonly DbSet<T> _dbSet;
         private readonly GamesDbContext _context;
         public BaseRepository(GamesDbContext context)
         {
-            //_dbSet = context.Set<T>();
-            _context = context;
+           _context = context;
         }
         public async Task<bool> Add(T entity)
         {
@@ -44,10 +42,9 @@ namespace GamesDB.WebApi.DAL.Repositories
         {
             T entity;
 
-            using (_context)
-            {
+            
                 entity = await _context.Set<T>().FirstOrDefaultAsync(x => x.Id == id);
-            }
+            
 
             return entity;
         }

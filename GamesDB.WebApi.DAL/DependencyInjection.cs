@@ -12,7 +12,7 @@ namespace GamesDB.WebApi.DAL
 {
    public static class DependencyInjection
     {
-        public static IServiceCollection AddPersistance(this IServiceCollection
+        public static IServiceCollection AddDbConnection(this IServiceCollection
             services, IConfiguration configuration)
         {
             var connectionString = configuration["DbConnection"];

@@ -4,6 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,9 +27,9 @@ namespace GamesDB.WebApi
                     var context = serviceProvider.GetRequiredService<GamesDbContext>();
                     DbInitializer.Initialize(context);
                 }
-                catch (Exception exeption)
+                catch (Exception exception)
                 {
-                    throw;
+                    Log.Fatal(exception, "An error occurred while app initialization");
                 }
             }
 

@@ -8,6 +8,5 @@ namespace GamesDB.WebApi.Service.ViewModels
 {
     public class BaseEntityViewModel
     {
-        public Type BaseType { get; set; }
     }
 }

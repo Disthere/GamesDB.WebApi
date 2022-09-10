@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace GamesDB.WebApi.Service.Implementations
 {
-    public abstract class BaseService<M, V> : IBaseService<M,V> where M : BaseEntity where V : BaseEntityViewModel
+    public abstract class BaseService<M, V> : IBaseService<V> where M : BaseEntity where V : BaseEntityViewModel
     {
         public BaseService(IBaseRepository<M> baseRepository) =>
             (_baseRepository) = (baseRepository);

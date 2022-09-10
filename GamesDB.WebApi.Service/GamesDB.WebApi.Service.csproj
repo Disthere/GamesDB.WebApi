@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\GamesDB.WebApi.DAL\GamesDB.WebApi.DAL.csproj" />
     <ProjectReference Include="..\GamesDB.WebApi.Domain\GamesDB.WebApi.Domain.csproj" />
   </ItemGroup>
