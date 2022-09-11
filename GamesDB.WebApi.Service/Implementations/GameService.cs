@@ -3,13 +3,14 @@ using GamesDB.WebApi.DAL;
 using GamesDB.WebApi.DAL.Interfaces;
 using GamesDB.WebApi.DAL.Repositories;
 using GamesDB.WebApi.Domain.Entities;
-using GamesDB.WebApi.Domain.Entities.GameAggregate;
+using GamesDB.WebApi.Domain.Entities.GamesAggregate;
 using GamesDB.WebApi.Domain.Enums;
 using GamesDB.WebApi.Domain.Response;
 using GamesDB.WebApi.Service.Interfaces;
 using GamesDB.WebApi.Service.ViewModels;
 using GamesDB.WebApi.Service.ViewModels.GameAggregateViewModels;
 using GamesDB.WebApi.Service.ViewModels.GameAggregateViewModels.ForViewModelData;
+using GamesDB.WebApi.Service.ViewModels.HttpResponses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,39 +19,41 @@ using System.Threading.Tasks;
 
 namespace GamesDB.WebApi.Service.Implementations
 {
-    public class GameService : IGameService 
+    public class GameService : IGameService
     {
-        
-        public GameService(IBaseRepository<Game> baseRepository, IMapper mapper, GamesDbContext dbContext) =>
-           (_baseRepository, _mapper, _dbContext) = (baseRepository, mapper, dbContext);
+
+        public GameService(IGameRepository gameRepository, IMapper mapper, GamesDbContext dbContext) =>
+           (_gameRepository, _mapper, _dbContext) = (gameRepository, mapper, dbContext);
 
 
         private readonly IMapper _mapper;
-        private readonly IBaseRepository<Game> _baseRepository;
+        private readonly IGameRepository _gameRepository;
         private readonly GamesDbContext _dbContext;
 
-        public async Task<IBaseResponse<GameViewModel>> Add(GameViewModel entity)
+
+        public async Task<IBaseResponse<bool>> Add(GameViewModel entity)
         {
             ForGameViewModelData data = new ForGameViewModelData(entity, _dbContext);
-                  
+
             var gameViewModel = entity;
+
             gameViewModel.Developer = await data.GetDeveloper();
-            var genres = data.GetGenresList();
-            gameViewModel.Genres = genres; 
 
-            var baseResponse = new BaseResponse<GameViewModel>();
+            gameViewModel.Genres = data.GetGenresList();
 
-            Game addingObject = _mapper.Map<Game>(gameViewModel);
+            var baseResponse = new BaseResponse<bool>();
+
+            Game addingGame = _mapper.Map<Game>(gameViewModel);
 
             try
             {
-                await _baseRepository.Add(addingObject);
-                baseResponse.Data = gameViewModel;
+                await _gameRepository.Add(addingGame);
+                baseResponse.Data = true;
                 baseResponse.StatusCode = RequestToDbErrorStatusCode.Success;
             }
             catch (Exception ex)
             {
-                return new BaseResponse<GameViewModel>()
+                return new BaseResponse<bool>()
                 {
                     Description = $"[Add] : {ex.Message}",
                     StatusCode = RequestToDbErrorStatusCode.InternalServerError
@@ -59,34 +62,30 @@ namespace GamesDB.WebApi.Service.Implementations
             return baseResponse;
         }
 
-        public Task<IBaseResponse<GameViewModel>> Delete(GameViewModel entity)
-        {
-            throw new NotImplementedException();
-        }
 
-        public async Task<IBaseResponse<GameViewModel>> Get(int id)
+        public async Task<IBaseResponse<GameResponse>> Get(int id)
         {
-            var baseResponse = new BaseResponse<GameViewModel>();
+            var baseResponse = new BaseResponse<GameResponse>();
 
             try
             {
-                var extractableObject = await _baseRepository.Get(id);
+                var extractableGame = await _gameRepository.Get(id);
 
-                if (extractableObject == null)
+                if (extractableGame == null)
                 {
                     baseResponse.Description = "Object not found";
                     baseResponse.StatusCode = RequestToDbErrorStatusCode.NotFound;
                     return baseResponse;
                 }
 
-                baseResponse.Data = _mapper.Map<GameViewModel>(extractableObject);
+                baseResponse.Data = new GameResponse(extractableGame);
                 baseResponse.StatusCode = RequestToDbErrorStatusCode.Success;
 
                 return baseResponse;
             }
             catch (Exception ex)
             {
-                return new BaseResponse<GameViewModel>()
+                return new BaseResponse<GameResponse>()
                 {
                     Description = $"[GetById] : {ex.Message}",
                     StatusCode = RequestToDbErrorStatusCode.InternalServerError,
@@ -94,14 +93,14 @@ namespace GamesDB.WebApi.Service.Implementations
             }
         }
 
-        public async Task<IBaseResponse<IEnumerable<GameViewModel>>> GetAll()
+        public async Task<IBaseResponse<IEnumerable<GameResponse>>> GetAll()
         {
-            var baseResponse = new BaseResponse<IEnumerable<GameViewModel>>();
+            var baseResponse = new BaseResponse<IEnumerable<GameResponse>>();
 
             try
             {
-                var games = await _baseRepository.GetAll();
-                                
+                var games = await _gameRepository.GetAll();
+
                 if (games == null)
                 {
                     baseResponse.Description = "Найдено 0 элементов";
@@ -109,15 +108,22 @@ namespace GamesDB.WebApi.Service.Implementations
                     return baseResponse;
                 }
 
-                baseResponse.Data = _mapper.Map<IEnumerable<GameViewModel>>(games);
-                
+                var gameResponses = new List<GameResponse>();
+
+                foreach (var game in games)
+                {
+                    gameResponses.Add(new GameResponse(game));
+                }
+
+                baseResponse.Data = gameResponses;
+
                 baseResponse.StatusCode = RequestToDbErrorStatusCode.Success;
 
                 return baseResponse;
             }
             catch (Exception ex)
             {
-                return new BaseResponse<IEnumerable<GameViewModel>>()
+                return new BaseResponse<IEnumerable<GameResponse>>()
                 {
                     Description = $"[GetAllGames] : {ex.Message}",
                     StatusCode = RequestToDbErrorStatusCode.InternalServerError
@@ -125,14 +131,76 @@ namespace GamesDB.WebApi.Service.Implementations
             }
         }
 
-        public Task<IBaseResponse<GameViewModel>> Update(GameViewModel entity)
+        public async Task<IBaseResponse<bool>> Update(GameViewModel entity)
         {
-            throw new NotImplementedException();
+            ForGameViewModelData data = new ForGameViewModelData(entity, _dbContext);
+
+            var gameViewModel = entity;
+
+            gameViewModel.Developer = await data.GetDeveloper();
+
+            gameViewModel.Genres = data.GetGenresList();
+
+            var baseResponse = new BaseResponse<bool>();
+
+            Game newGame = _mapper.Map<Game>(gameViewModel);
+
+            Game updatingGame = await _gameRepository.Get(newGame.Id);
+
+            {
+                updatingGame.Title = newGame.Title;
+                updatingGame.DeveloperId = newGame.DeveloperId;
+                updatingGame.Developer = newGame.Developer;
+                updatingGame.Genres = newGame.Genres;
+            }
+
+            try
+            {
+                await _gameRepository.Update(updatingGame);
+                baseResponse.Data = true;
+                baseResponse.StatusCode = RequestToDbErrorStatusCode.Success;
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<bool>()
+                {
+                    Description = $"[Update] : {ex.Message}",
+                    StatusCode = RequestToDbErrorStatusCode.InternalServerError
+                };
+            }
+            return baseResponse;
         }
-        //public BaseService(IBaseRepository<T> baseRepository)
-        //{
-        //    _baseRepository = baseRepository;
-        //    _baseEntity = _mapper.Map<BaseEntity>(_baseEntityViewModel);
-        //}var ma = _mapper.Map<BaseEntity>(entity);
+
+        public async Task<IBaseResponse<bool>> Delete(int id)
+        {
+            var baseResponse = new BaseResponse<bool>();
+
+            try
+            {
+                var deletingGame = await _gameRepository.Get(id);
+
+                if (deletingGame == null)
+                {
+                    baseResponse.Description = "Object not found";
+                    baseResponse.StatusCode = RequestToDbErrorStatusCode.NotFound;
+                    return baseResponse;
+                }
+
+                await _gameRepository.Delete(deletingGame);
+                baseResponse.Data = true;
+                baseResponse.StatusCode = RequestToDbErrorStatusCode.Success;
+
+                return baseResponse;
+            }
+            catch (Exception ex)
+            {
+                return new BaseResponse<bool>()
+                {
+                    Description = $"[Delete] : {ex.Message}",
+                    StatusCode = RequestToDbErrorStatusCode.InternalServerError,
+                };
+            }
+        }
+
     }
 }

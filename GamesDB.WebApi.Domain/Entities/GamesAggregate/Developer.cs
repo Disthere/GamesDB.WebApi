@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GamesDB.WebApi.Domain.Entities.GameAggregate
+namespace GamesDB.WebApi.Domain.Entities.GamesAggregate
 {
-   public class Genre : BaseEntity
+   public class Developer : BaseEntity
     {
-        public Genre()
+        public Developer()
         {
             this.Games = new List<Game>();
         }

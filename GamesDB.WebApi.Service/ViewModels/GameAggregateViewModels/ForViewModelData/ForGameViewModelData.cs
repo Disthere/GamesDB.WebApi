@@ -1,6 +1,6 @@
 ﻿using GamesDB.WebApi.DAL;
 using GamesDB.WebApi.DAL.Repositories;
-using GamesDB.WebApi.Domain.Entities.GameAggregate;
+using GamesDB.WebApi.Domain.Entities.GamesAggregate;
 using System;
 using System.Collections.Generic;
 using System.Linq;

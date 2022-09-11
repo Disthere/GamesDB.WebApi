@@ -1,4 +1,4 @@
-﻿using GamesDB.WebApi.Domain.Entities.GameAggregate;
+﻿using GamesDB.WebApi.Domain.Entities.GamesAggregate;
 using GamesDB.WebApi.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using GamesDB.WebApi.Domain.Entities.GameAggregate;
-using GamesDB.WebApi.Service.ViewModels.GameAggregateQuery;
+using GamesDB.WebApi.Domain.Entities.GamesAggregate;
+using GamesDB.WebApi.Service.ViewModels.HttpQuerys;
 using GamesDB.WebApi.Service.ViewModels.GameAggregateViewModels;
 using System;
 using System.Collections.Generic;
@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace GamesDB.WebApi.Service.Mapping
 {
-    public class GameMappingProfile : Profile
+    public class GamesMappingProfile : Profile
     {
-        public GameMappingProfile()
+        public GamesMappingProfile()
         {
             CreateMap<Game, GameViewModel>()
                 .ForMember(gameVm => gameVm.Id,
@@ -43,6 +43,10 @@ namespace GamesDB.WebApi.Service.Mapping
                 opt => opt.MapFrom(dev => dev.Games)).ReverseMap();
 
             CreateMap<CreateGameQuery, GameViewModel>().ReverseMap();
+
+            CreateMap<UpdateGameQuery, GameViewModel>().ReverseMap();
+
+            CreateMap<Game, Game>().ReverseMap();
         }
     }
 }

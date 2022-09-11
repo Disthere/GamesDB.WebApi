@@ -1,5 +1,5 @@
 ﻿using GamesDB.WebApi.Domain.Entities;
-using GamesDB.WebApi.Domain.Entities.GameAggregate;
+using GamesDB.WebApi.Domain.Entities.GamesAggregate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
