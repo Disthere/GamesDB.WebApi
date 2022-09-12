@@ -14,38 +14,37 @@ using System.Threading.Tasks;
 
 namespace GamesDB.WebApi.Controllers
 {
-    public class GameController : BaseController
+    public class DeveloperController : BaseController
     {
-        private readonly IGameService _gameService;
+        private readonly IDeveloperService _developerService;
         private readonly IMapper _mapper;
 
-        public GameController(IGameService gameService, IMapper mapper) =>
-            (_gameService, _mapper) = (gameService, mapper);
+        public DeveloperController(IDeveloperService developerService, IMapper mapper) =>
+            (_developerService, _mapper) = (developerService, mapper);
 
 
-        // POST: GameController
+        // POST: DeveloperController
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] CreateGameQuery createGameQuery)
+        public async Task<ActionResult> Create([FromBody] CreateDeveloperQuery createDeveloperQuery)
         {
-            var gameViewModel = _mapper.Map<GameViewModel>(createGameQuery);
+            var developerViewModel = _mapper.Map<DeveloperViewModel>(createDeveloperQuery);
 
-            var response = await _gameService.Add(gameViewModel);
+            var response = await _developerService.Add(developerViewModel);
 
             if (response.StatusCode == RequestToDbErrorStatusCode.Success)
             {
                 return new ObjectResult(response.Data);
             }
 
-            //return BadRequest();
-            return RedirectToAction("Error");
+            return BadRequest();
         }
 
 
-        // GET: GameController
-        [HttpGet("{id}", Name = "GetGame")]
+        // GET: DeveloperController
+        [HttpGet("{id}", Name = "GetDeveloper")]
         public async Task<IActionResult> Get(int id)
         {
-            var response = await _gameService.Get(id);
+            var response = await _developerService.Get(id);
 
             if (response.StatusCode == RequestToDbErrorStatusCode.Success)
             {
@@ -56,11 +55,11 @@ namespace GamesDB.WebApi.Controllers
         }
 
 
-        // GET: GameController
-        [HttpGet(Name = "GetAllGames")]
+        // GET: DeveloperController
+        [HttpGet(Name = "GetAllDevelopers")]
         public async Task<IActionResult> GetAll()
         {
-            var response = await _gameService.GetAll();
+            var response = await _developerService.GetAll();
 
             if (response.StatusCode == RequestToDbErrorStatusCode.Success)
             {
@@ -71,13 +70,13 @@ namespace GamesDB.WebApi.Controllers
         }
 
 
-        // PUT: GameController
+        // PUT: DeveloperController
         [HttpPut]
-        public async Task<ActionResult> Update([FromBody] UpdateGameQuery updateGameQuery)
+        public async Task<ActionResult> Update([FromBody] UpdateDeveloperQuery updateDeveloperQuery)
         {
-            var gameViewModel = _mapper.Map<GameViewModel>(updateGameQuery);
+            var developerViewModel = _mapper.Map<DeveloperViewModel>(updateDeveloperQuery);
 
-            var response = await _gameService.Update(gameViewModel);
+            var response = await _developerService.Update(developerViewModel);
 
             if (response.StatusCode == RequestToDbErrorStatusCode.Success)
             {
@@ -88,25 +87,11 @@ namespace GamesDB.WebApi.Controllers
         }
 
 
-        // DELETE: GameController
-        [HttpDelete("{id}", Name = "DeleteGame")]
+        // DELETE: DeveloperController
+        [HttpDelete("{id}", Name = "DeleteDeveloper")]
         public async Task<IActionResult> Delete(int id)
         {
-            var response = await _gameService.Delete(id);
-
-            if (response.StatusCode == RequestToDbErrorStatusCode.Success)
-            {
-                return new ObjectResult(response.Data);
-            }
-
-            return NotFound();
-        }
-
-        // GET: GameController
-        [HttpGet("{genreId}", Name = "GetGameByGenre")]
-        public async Task<IActionResult> GetByGenre(int genreId)
-        {
-            var response = await _gameService.GetByGenre(genreId);
+            var response = await _developerService.Delete(id);
 
             if (response.StatusCode == RequestToDbErrorStatusCode.Success)
             {

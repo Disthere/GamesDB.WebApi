@@ -19,35 +19,27 @@ using System.Threading.Tasks;
 
 namespace GamesDB.WebApi.Service.Implementations
 {
-    public class GameService : IGameService
+    public class DeveloperService : IDeveloperService
     {
 
-        public GameService(IGameRepository gameRepository, IMapper mapper, GamesDbContext dbContext) =>
-           (_gameRepository, _mapper, _dbContext) = (gameRepository, mapper, dbContext);
+        public DeveloperService(IDeveloperRepository developerRepository, IMapper mapper, GamesDbContext dbContext) =>
+           (_developerRepository, _mapper, _dbContext) = (developerRepository, mapper, dbContext);
 
 
         private readonly IMapper _mapper;
-        private readonly IGameRepository _gameRepository;
+        private readonly IDeveloperRepository _developerRepository;
         private readonly GamesDbContext _dbContext;
 
 
-        public async Task<IBaseDbResponse<bool>> Add(GameViewModel entity)
+        public async Task<IBaseDbResponse<bool>> Add(DeveloperViewModel entity)
         {
-            ForGameViewModelData data = new(entity, _dbContext);
-
-            var gameViewModel = entity;
-
-            gameViewModel.Developer = await data.GetDeveloper();
-
-            gameViewModel.Genres = data.GetGenresList();
-
             var baseResponse = new BaseDbResponse<bool>();
 
-            Game addingGame = _mapper.Map<Game>(gameViewModel);
+            Developer addingDeveloper = _mapper.Map<Developer>(entity);
 
             try
             {
-                await _gameRepository.Add(addingGame);
+                await _developerRepository.Add(addingDeveloper);
                 baseResponse.Data = true;
                 baseResponse.StatusCode = RequestToDbErrorStatusCode.Success;
             }
@@ -63,29 +55,29 @@ namespace GamesDB.WebApi.Service.Implementations
         }
 
 
-        public async Task<IBaseDbResponse<GameResponse>> Get(int id)
+        public async Task<IBaseDbResponse<DeveloperResponse>> Get(int id)
         {
-            var baseResponse = new BaseDbResponse<GameResponse>();
+            var baseResponse = new BaseDbResponse<DeveloperResponse>();
 
             try
             {
-                var extractableGame = await _gameRepository.Get(id);
+                var extractableDeveloper = await _developerRepository.Get(id);
 
-                if (extractableGame == null)
+                if (extractableDeveloper == null)
                 {
                     baseResponse.Description = "Object not found";
                     baseResponse.StatusCode = RequestToDbErrorStatusCode.NotFound;
                     return baseResponse;
                 }
 
-                baseResponse.Data = new GameResponse(extractableGame);
+                baseResponse.Data = new DeveloperResponse(extractableDeveloper);
                 baseResponse.StatusCode = RequestToDbErrorStatusCode.Success;
 
                 return baseResponse;
             }
             catch (Exception ex)
             {
-                return new BaseDbResponse<GameResponse>()
+                return new BaseDbResponse<DeveloperResponse>()
                 {
                     Description = $"[GetById] : {ex.Message}",
                     StatusCode = RequestToDbErrorStatusCode.InternalServerError,
@@ -93,29 +85,29 @@ namespace GamesDB.WebApi.Service.Implementations
             }
         }
 
-        public async Task<IBaseDbResponse<IEnumerable<GameResponse>>> GetAll()
+        public async Task<IBaseDbResponse<IEnumerable<DeveloperResponse>>> GetAll()
         {
-            var baseResponse = new BaseDbResponse<IEnumerable<GameResponse>>();
+            var baseResponse = new BaseDbResponse<IEnumerable<DeveloperResponse>>();
 
             try
             {
-                var games = await _gameRepository.GetAll();
+                var developers = await _developerRepository.GetAll();
 
-                if (games == null)
+                if (developers == null)
                 {
                     baseResponse.Description = "Найдено 0 элементов";
                     baseResponse.StatusCode = RequestToDbErrorStatusCode.NotFound;
                     return baseResponse;
                 }
 
-                var gameResponses = new List<GameResponse>();
+                var developerResponses = new List<DeveloperResponse>();
 
-                foreach (var game in games)
+                foreach (var developer in developers)
                 {
-                    gameResponses.Add(new GameResponse(game));
+                    developerResponses.Add(new DeveloperResponse(developer));
                 }
 
-                baseResponse.Data = gameResponses;
+                baseResponse.Data = developerResponses;
 
                 baseResponse.StatusCode = RequestToDbErrorStatusCode.Success;
 
@@ -123,40 +115,27 @@ namespace GamesDB.WebApi.Service.Implementations
             }
             catch (Exception ex)
             {
-                return new BaseDbResponse<IEnumerable<GameResponse>>()
+                return new BaseDbResponse<IEnumerable<DeveloperResponse>>()
                 {
-                    Description = $"[GetAllGames] : {ex.Message}",
+                    Description = $"[GetAll] : {ex.Message}",
                     StatusCode = RequestToDbErrorStatusCode.InternalServerError
                 };
             }
         }
 
-        public async Task<IBaseDbResponse<bool>> Update(GameViewModel entity)
+        public async Task<IBaseDbResponse<bool>> Update(DeveloperViewModel entity)
         {
-            ForGameViewModelData data = new ForGameViewModelData(entity, _dbContext);
-
-            var gameViewModel = entity;
-
-            gameViewModel.Developer = await data.GetDeveloper();
-
-            gameViewModel.Genres = data.GetGenresList();
-
             var baseResponse = new BaseDbResponse<bool>();
 
-            Game newGame = _mapper.Map<Game>(gameViewModel);
-
-            Game updatingGame = await _gameRepository.Get(newGame.Id);
+            Developer updatingDeveloper = await _developerRepository.Get(entity.Id);
 
             {
-                updatingGame.Title = newGame.Title;
-                updatingGame.DeveloperId = newGame.DeveloperId;
-                updatingGame.Developer = newGame.Developer;
-                updatingGame.Genres = newGame.Genres;
+                updatingDeveloper.Name = entity.Name;
             }
 
             try
             {
-                await _gameRepository.Update(updatingGame);
+                await _developerRepository.Update(updatingDeveloper);
                 baseResponse.Data = true;
                 baseResponse.StatusCode = RequestToDbErrorStatusCode.Success;
             }
@@ -177,16 +156,16 @@ namespace GamesDB.WebApi.Service.Implementations
 
             try
             {
-                var deletingGame = await _gameRepository.Get(id);
+                var deletingDeveloper = await _developerRepository.Get(id);
 
-                if (deletingGame == null)
+                if (deletingDeveloper == null)
                 {
                     baseResponse.Description = "Object not found";
                     baseResponse.StatusCode = RequestToDbErrorStatusCode.NotFound;
                     return baseResponse;
                 }
 
-                await _gameRepository.Delete(deletingGame);
+                await _developerRepository.Delete(deletingDeveloper);
                 baseResponse.Data = true;
                 baseResponse.StatusCode = RequestToDbErrorStatusCode.Success;
 
@@ -202,42 +181,5 @@ namespace GamesDB.WebApi.Service.Implementations
             }
         }
 
-        public async Task<IBaseDbResponse<IEnumerable<GameResponse>>> GetByGenre(int genreId)
-        {
-            var baseResponse = new BaseDbResponse<IEnumerable<GameResponse>>();
-
-            try
-            {
-                var games = await _gameRepository.GetByGenre(genreId);
-
-                if (games == null)
-                {
-                    baseResponse.Description = "Найдено 0 элементов";
-                    baseResponse.StatusCode = RequestToDbErrorStatusCode.NotFound;
-                    return baseResponse;
-                }
-
-                var gameResponses = new List<GameResponse>();
-
-                foreach (var game in games)
-                {
-                    gameResponses.Add(new GameResponse(game));
-                }
-
-                baseResponse.Data = gameResponses;
-
-                baseResponse.StatusCode = RequestToDbErrorStatusCode.Success;
-
-                return baseResponse;
-            }
-            catch (Exception ex)
-            {
-                return new BaseDbResponse<IEnumerable<GameResponse>>()
-                {
-                    Description = $"[GetAllGames] : {ex.Message}",
-                    StatusCode = RequestToDbErrorStatusCode.InternalServerError
-                };
-            }
-        }
     }
 }

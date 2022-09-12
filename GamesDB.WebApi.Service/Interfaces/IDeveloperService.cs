@@ -10,18 +10,16 @@ using System.Threading.Tasks;
 
 namespace GamesDB.WebApi.Service.Interfaces
 {
-    public interface IGameService 
+    public interface IDeveloperService 
     {
-        Task<IBaseDbResponse<bool>> Add(GameViewModel entity);
+        Task<IBaseDbResponse<bool>> Add(DeveloperViewModel entity);
 
-        Task<IBaseDbResponse<bool>> Update(GameViewModel entity);
+        Task<IBaseDbResponse<bool>> Update(DeveloperViewModel entity);
 
         Task<IBaseDbResponse<bool>> Delete(int id);
 
-        Task<IBaseDbResponse<GameResponse>> Get(int id);
+        Task<IBaseDbResponse<DeveloperResponse>> Get(int id);
 
-        Task<IBaseDbResponse<IEnumerable<GameResponse>>> GetAll();
-
-        Task<IBaseDbResponse<IEnumerable<GameResponse>>> GetByGenre(int genreId);
+        Task<IBaseDbResponse<IEnumerable<DeveloperResponse>>> GetAll();
     }
 }

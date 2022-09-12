@@ -5,6 +5,7 @@ using GamesDB.WebApi.DAL.Repositories;
 using GamesDB.WebApi.DAL.Repositories.GamesAggregate;
 using GamesDB.WebApi.Domain.Entities;
 using GamesDB.WebApi.Domain.Entities.GamesAggregate;
+using GamesDB.WebApi.Service;
 using GamesDB.WebApi.Service.Implementations;
 using GamesDB.WebApi.Service.Interfaces;
 using GamesDB.WebApi.Service.Mapping;
@@ -39,11 +40,21 @@ namespace GamesDB.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbConnection(Configuration);
 
             services.AddAutoMapper(typeof(GamesMappingProfile));
-            services.AddDbConnection(Configuration);
-            services.AddScoped<IGameService, GameService>();
-            services.AddScoped<IGameRepository, GameRepository>();
+
+            services.AddServiceInjection();
+
+            //services.AddScoped<IGameService, GameService>();
+            //services.AddScoped<IGameRepository, GameRepository>();
+
+            //services.AddScoped<IGenreService, GenreService>();
+            //services.AddScoped<IGenreRepository, GenreRepository>();
+
+            //services.AddScoped<IDeveloperService, DeveloperService>();
+            //services.AddScoped<IDeveloperRepository, DeveloperRepository>();
+
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);

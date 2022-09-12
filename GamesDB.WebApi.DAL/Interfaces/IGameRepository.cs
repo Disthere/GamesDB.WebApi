@@ -10,5 +10,6 @@ namespace GamesDB.WebApi.DAL.Interfaces
 {
     public interface IGameRepository : IBaseRepository<Game>
     {
+        Task<IEnumerable<Game>> GetByGenre(int genreId);
     }
 }

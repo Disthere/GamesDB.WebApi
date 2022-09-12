@@ -15,7 +15,7 @@ namespace GamesDB.WebApi.Service.ViewModels.GameAggregateViewModels
         {
             this.Genres = new List<Genre>();
         }
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public string Title { get; set; }
         public int? DeveloperId { get; set; }
         public Developer Developer { get; set; }

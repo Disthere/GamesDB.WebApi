@@ -2,7 +2,7 @@
 using GamesDB.WebApi.DAL.Interfaces;
 using GamesDB.WebApi.Domain.Entities;
 using GamesDB.WebApi.Domain.Enums;
-using GamesDB.WebApi.Domain.Response;
+using GamesDB.WebApi.Domain.DbResponse;
 using GamesDB.WebApi.Service.Interfaces;
 using GamesDB.WebApi.Service.ViewModels;
 using System;
@@ -22,9 +22,9 @@ namespace GamesDB.WebApi.Service.Implementations
         private readonly IMapper _mapper;
         private readonly IBaseRepository<M> _baseRepository;
 
-        public async Task<IBaseResponse<V>> Add(V entity)
+        public async Task<IBaseDbResponse<V>> Add(V entity)
         {
-            var baseResponse = new BaseResponse<V>();
+            var baseResponse = new BaseDbResponse<V>();
 
             M addingObject = _mapper.Map<M>(entity);
             try
@@ -33,7 +33,7 @@ namespace GamesDB.WebApi.Service.Implementations
             }
             catch (Exception ex)
             {
-                return new BaseResponse<V>()
+                return new BaseDbResponse<V>()
                 {
                     Description = $"[Add] : {ex.Message}",
                     StatusCode = RequestToDbErrorStatusCode.InternalServerError
@@ -42,14 +42,14 @@ namespace GamesDB.WebApi.Service.Implementations
             return baseResponse;
         }
 
-        public Task<IBaseResponse<V>> Delete(V entity)
+        public Task<IBaseDbResponse<V>> Delete(V entity)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IBaseResponse<V>> Get(int id)
+        public async Task<IBaseDbResponse<V>> Get(int id)
         {
-            var baseResponse = new BaseResponse<V>();
+            var baseResponse = new BaseDbResponse<V>();
 
             try
             {
@@ -68,7 +68,7 @@ namespace GamesDB.WebApi.Service.Implementations
             }
             catch (Exception ex)
             {
-                return new BaseResponse<V>()
+                return new BaseDbResponse<V>()
                 {
                     Description = $"[GetById] : {ex.Message}",
                     StatusCode = RequestToDbErrorStatusCode.InternalServerError,
@@ -76,12 +76,12 @@ namespace GamesDB.WebApi.Service.Implementations
             }
         }
 
-        public Task<IBaseResponse<IEnumerable<V>>> GetAll()
+        public Task<IBaseDbResponse<IEnumerable<V>>> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public Task<IBaseResponse<V>> Update(V entity)
+        public Task<IBaseDbResponse<V>> Update(V entity)
         {
             throw new NotImplementedException();
         }

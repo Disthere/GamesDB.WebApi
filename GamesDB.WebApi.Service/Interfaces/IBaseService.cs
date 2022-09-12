@@ -1,5 +1,5 @@
 ﻿using GamesDB.WebApi.Domain.Entities;
-using GamesDB.WebApi.Domain.Response;
+using GamesDB.WebApi.Domain.DbResponse;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +10,14 @@ namespace GamesDB.WebApi.Service.Interfaces
 {
     public interface IBaseService<V>
     {
-        Task<IBaseResponse<V>> Add(V entity);
+        Task<IBaseDbResponse<V>> Add(V entity);
 
-        Task<IBaseResponse<V>> Update(V entity);
+        Task<IBaseDbResponse<V>> Update(V entity);
 
-        Task<IBaseResponse<V>> Delete(V entity);
+        Task<IBaseDbResponse<V>> Delete(V entity);
 
-        Task<IBaseResponse<V>> Get(int id);
+        Task<IBaseDbResponse<V>> Get(int id);
 
-        Task<IBaseResponse<IEnumerable<V>>> GetAll();
+        Task<IBaseDbResponse<IEnumerable<V>>> GetAll();
     }
 }

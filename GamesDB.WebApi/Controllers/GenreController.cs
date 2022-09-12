@@ -14,38 +14,37 @@ using System.Threading.Tasks;
 
 namespace GamesDB.WebApi.Controllers
 {
-    public class GameController : BaseController
+    public class GenreController : BaseController
     {
-        private readonly IGameService _gameService;
+        private readonly IGenreService _genreService;
         private readonly IMapper _mapper;
 
-        public GameController(IGameService gameService, IMapper mapper) =>
-            (_gameService, _mapper) = (gameService, mapper);
+        public GenreController(IGenreService genreService, IMapper mapper) =>
+            (_genreService, _mapper) = (genreService, mapper);
 
 
-        // POST: GameController
+        // POST: GenreController
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] CreateGameQuery createGameQuery)
+        public async Task<ActionResult> Create([FromBody] CreateGenreQuery createGenreQuery)
         {
-            var gameViewModel = _mapper.Map<GameViewModel>(createGameQuery);
+            var genreViewModel = _mapper.Map<GenreViewModel>(createGenreQuery);
 
-            var response = await _gameService.Add(gameViewModel);
+            var response = await _genreService.Add(genreViewModel);
 
             if (response.StatusCode == RequestToDbErrorStatusCode.Success)
             {
                 return new ObjectResult(response.Data);
             }
 
-            //return BadRequest();
-            return RedirectToAction("Error");
+            return BadRequest();
         }
 
 
-        // GET: GameController
-        [HttpGet("{id}", Name = "GetGame")]
+        // GET: GenreController
+        [HttpGet("{id}", Name = "GetGenre")]
         public async Task<IActionResult> Get(int id)
         {
-            var response = await _gameService.Get(id);
+            var response = await _genreService.Get(id);
 
             if (response.StatusCode == RequestToDbErrorStatusCode.Success)
             {
@@ -56,11 +55,11 @@ namespace GamesDB.WebApi.Controllers
         }
 
 
-        // GET: GameController
-        [HttpGet(Name = "GetAllGames")]
+        // GET: GenreController
+        [HttpGet(Name = "GetAllGenres")]
         public async Task<IActionResult> GetAll()
         {
-            var response = await _gameService.GetAll();
+            var response = await _genreService.GetAll();
 
             if (response.StatusCode == RequestToDbErrorStatusCode.Success)
             {
@@ -71,13 +70,13 @@ namespace GamesDB.WebApi.Controllers
         }
 
 
-        // PUT: GameController
+        // PUT: GenreController
         [HttpPut]
-        public async Task<ActionResult> Update([FromBody] UpdateGameQuery updateGameQuery)
+        public async Task<ActionResult> Update([FromBody] UpdateGenreQuery updateGenreQuery)
         {
-            var gameViewModel = _mapper.Map<GameViewModel>(updateGameQuery);
+            var genreViewModel = _mapper.Map<GenreViewModel>(updateGenreQuery);
 
-            var response = await _gameService.Update(gameViewModel);
+            var response = await _genreService.Update(genreViewModel);
 
             if (response.StatusCode == RequestToDbErrorStatusCode.Success)
             {
@@ -88,25 +87,11 @@ namespace GamesDB.WebApi.Controllers
         }
 
 
-        // DELETE: GameController
-        [HttpDelete("{id}", Name = "DeleteGame")]
+        // DELETE: GenreController
+        [HttpDelete("{id}", Name = "DeleteGenre")]
         public async Task<IActionResult> Delete(int id)
         {
-            var response = await _gameService.Delete(id);
-
-            if (response.StatusCode == RequestToDbErrorStatusCode.Success)
-            {
-                return new ObjectResult(response.Data);
-            }
-
-            return NotFound();
-        }
-
-        // GET: GameController
-        [HttpGet("{genreId}", Name = "GetGameByGenre")]
-        public async Task<IActionResult> GetByGenre(int genreId)
-        {
-            var response = await _gameService.GetByGenre(genreId);
+            var response = await _genreService.Delete(id);
 
             if (response.StatusCode == RequestToDbErrorStatusCode.Success)
             {
