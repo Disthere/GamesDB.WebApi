@@ -1,11 +1,5 @@
 ﻿using GamesDB.WebApi.Domain.Entities.GamesAggregate;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace GamesDB.WebApi.DAL.Interfaces
 {
@@ -15,6 +9,5 @@ namespace GamesDB.WebApi.DAL.Interfaces
         DbSet<Developer> Developers { get; set; }
         DbSet<Genre> Genres { get; set; }
 
-        //Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

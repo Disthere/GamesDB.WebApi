@@ -1,9 +1,6 @@
 ﻿using GamesDB.WebApi.Domain.Entities.GamesAggregate;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace GamesDB.WebApi.Service.ViewModels.HttpResponses
 {
@@ -43,7 +40,7 @@ namespace GamesDB.WebApi.Service.ViewModels.HttpResponses
                     this.GenresIds.Add(genre.Id);
                 }
             }
-
         }
+
     }
 }

@@ -1,36 +1,29 @@
 ﻿using AutoMapper;
 using GamesDB.WebApi.DAL;
 using GamesDB.WebApi.DAL.Interfaces;
-using GamesDB.WebApi.DAL.Repositories;
-using GamesDB.WebApi.Domain.Entities;
 using GamesDB.WebApi.Domain.Entities.GamesAggregate;
 using GamesDB.WebApi.Domain.Enums;
 using GamesDB.WebApi.Domain.DbResponse;
 using GamesDB.WebApi.Service.Interfaces;
-using GamesDB.WebApi.Service.ViewModels;
 using GamesDB.WebApi.Service.ViewModels.GameAggregateViewModels;
-using GamesDB.WebApi.Service.ViewModels.GameAggregateViewModels.ForViewModelData;
 using GamesDB.WebApi.Service.ViewModels.HttpResponses;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GamesDB.WebApi.Service.Implementations
 {
     public class GenreService : IGenreService
     {
+        private readonly IMapper _mapper;
+        private readonly IGenreRepository _genreRepository;
+        private readonly GamesDbContext _dbContext;
 
         public GenreService(IGenreRepository genreRepository, IMapper mapper, GamesDbContext dbContext) =>
            (_genreRepository, _mapper, _dbContext) = (genreRepository, mapper, dbContext);
 
 
-        private readonly IMapper _mapper;
-        private readonly IGenreRepository _genreRepository;
-        private readonly GamesDbContext _dbContext;
-
-
+        #region Добавить новый жанр в базу данных
         public async Task<IBaseDbResponse<bool>> Add(GenreViewModel entity)
         {
             var baseResponse = new BaseDbResponse<bool>();
@@ -53,8 +46,9 @@ namespace GamesDB.WebApi.Service.Implementations
             }
             return baseResponse;
         }
+        #endregion
 
-
+        #region Получить информацию о жанре из базы данных
         public async Task<IBaseDbResponse<GenreResponse>> Get(int id)
         {
             var baseResponse = new BaseDbResponse<GenreResponse>();
@@ -84,7 +78,9 @@ namespace GamesDB.WebApi.Service.Implementations
                 };
             }
         }
+        #endregion
 
+        #region Получить список всех жанров из базы данных
         public async Task<IBaseDbResponse<IEnumerable<GenreResponse>>> GetAll()
         {
             var baseResponse = new BaseDbResponse<IEnumerable<GenreResponse>>();
@@ -122,7 +118,9 @@ namespace GamesDB.WebApi.Service.Implementations
                 };
             }
         }
+        #endregion
 
+        #region Обновить информацию о жанре в базе данных
         public async Task<IBaseDbResponse<bool>> Update(GenreViewModel entity)
         {
             var baseResponse = new BaseDbResponse<bool>();
@@ -149,7 +147,9 @@ namespace GamesDB.WebApi.Service.Implementations
             }
             return baseResponse;
         }
+        #endregion
 
+        #region Удалить информацию о жанре из базы данных
         public async Task<IBaseDbResponse<bool>> Delete(int id)
         {
             var baseResponse = new BaseDbResponse<bool>();
@@ -180,6 +180,6 @@ namespace GamesDB.WebApi.Service.Implementations
                 };
             }
         }
-
+        #endregion
     }
 }

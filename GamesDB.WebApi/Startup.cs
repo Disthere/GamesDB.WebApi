@@ -1,30 +1,13 @@
-using AutoMapper;
 using GamesDB.WebApi.DAL;
-using GamesDB.WebApi.DAL.Interfaces;
-using GamesDB.WebApi.DAL.Repositories;
-using GamesDB.WebApi.DAL.Repositories.GamesAggregate;
-using GamesDB.WebApi.Domain.Entities;
-using GamesDB.WebApi.Domain.Entities.GamesAggregate;
 using GamesDB.WebApi.Service;
-using GamesDB.WebApi.Service.Implementations;
-using GamesDB.WebApi.Service.Interfaces;
 using GamesDB.WebApi.Service.Mapping;
-using GamesDB.WebApi.Service.ViewModels;
-using GamesDB.WebApi.Service.ViewModels.GameAggregateViewModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
+
 
 namespace GamesDB.WebApi
 {
@@ -45,20 +28,13 @@ namespace GamesDB.WebApi
             services.AddAutoMapper(typeof(GamesMappingProfile));
 
             services.AddServiceInjection();
-
-            //services.AddScoped<IGameService, GameService>();
-            //services.AddScoped<IGameRepository, GameRepository>();
-
-            //services.AddScoped<IGenreService, GenreService>();
-            //services.AddScoped<IGenreRepository, GenreRepository>();
-
-            //services.AddScoped<IDeveloperService, DeveloperService>();
-            //services.AddScoped<IDeveloperRepository, DeveloperRepository>();
-
+                        
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
             services.AddControllers();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "GamesDB.WebApi", Version = "v1" });
@@ -78,8 +54,6 @@ namespace GamesDB.WebApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

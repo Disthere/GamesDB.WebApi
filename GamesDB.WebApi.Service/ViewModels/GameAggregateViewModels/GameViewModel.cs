@@ -1,21 +1,16 @@
-﻿using GamesDB.WebApi.Domain.Entities;
-using GamesDB.WebApi.Domain.Entities.GamesAggregate;
-using System;
+﻿using GamesDB.WebApi.Domain.Entities.GamesAggregate;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+
 
 namespace GamesDB.WebApi.Service.ViewModels.GameAggregateViewModels
 {
-    public class GameViewModel : BaseEntityViewModel
+    public class GameViewModel
     {
         public GameViewModel()
         {
             this.Genres = new List<Genre>();
         }
-        public int? Id { get; set; }
+        public int Id { get; set; }
         public string Title { get; set; }
         public int? DeveloperId { get; set; }
         public Developer Developer { get; set; }

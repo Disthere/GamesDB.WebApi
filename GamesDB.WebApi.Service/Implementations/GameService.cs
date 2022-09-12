@@ -1,49 +1,42 @@
 ﻿using AutoMapper;
 using GamesDB.WebApi.DAL;
 using GamesDB.WebApi.DAL.Interfaces;
-using GamesDB.WebApi.DAL.Repositories;
-using GamesDB.WebApi.Domain.Entities;
 using GamesDB.WebApi.Domain.Entities.GamesAggregate;
 using GamesDB.WebApi.Domain.Enums;
 using GamesDB.WebApi.Domain.DbResponse;
 using GamesDB.WebApi.Service.Interfaces;
-using GamesDB.WebApi.Service.ViewModels;
 using GamesDB.WebApi.Service.ViewModels.GameAggregateViewModels;
 using GamesDB.WebApi.Service.ViewModels.GameAggregateViewModels.ForViewModelData;
 using GamesDB.WebApi.Service.ViewModels.HttpResponses;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GamesDB.WebApi.Service.Implementations
 {
     public class GameService : IGameService
     {
-
-        public GameService(IGameRepository gameRepository, IMapper mapper, GamesDbContext dbContext) =>
-           (_gameRepository, _mapper, _dbContext) = (gameRepository, mapper, dbContext);
-
-
         private readonly IMapper _mapper;
         private readonly IGameRepository _gameRepository;
         private readonly GamesDbContext _dbContext;
 
+        public GameService(IGameRepository gameRepository, IMapper mapper, GamesDbContext dbContext) =>
+           (_gameRepository, _mapper, _dbContext) = (gameRepository, mapper, dbContext);
 
+        #region Добавить новую игру
         public async Task<IBaseDbResponse<bool>> Add(GameViewModel entity)
         {
+            Game addingGame = _mapper.Map<Game>(entity);
+
             ForGameViewModelData data = new(entity, _dbContext);
 
-            var gameViewModel = entity;
+            var developer = await data.GetDeveloper();
+            addingGame.Developer = developer;
 
-            gameViewModel.Developer = await data.GetDeveloper();
-
-            gameViewModel.Genres = data.GetGenresList();
+            var genres = data.GetGenresList();
+            addingGame.Genres = genres;
 
             var baseResponse = new BaseDbResponse<bool>();
-
-            Game addingGame = _mapper.Map<Game>(gameViewModel);
 
             try
             {
@@ -61,8 +54,9 @@ namespace GamesDB.WebApi.Service.Implementations
             }
             return baseResponse;
         }
+        #endregion
 
-
+        #region Получить информацию об игре из базы данных
         public async Task<IBaseDbResponse<GameResponse>> Get(int id)
         {
             var baseResponse = new BaseDbResponse<GameResponse>();
@@ -92,7 +86,9 @@ namespace GamesDB.WebApi.Service.Implementations
                 };
             }
         }
+        #endregion
 
+        #region Получить список всех игр из базы данных
         public async Task<IBaseDbResponse<IEnumerable<GameResponse>>> GetAll()
         {
             var baseResponse = new BaseDbResponse<IEnumerable<GameResponse>>();
@@ -130,20 +126,20 @@ namespace GamesDB.WebApi.Service.Implementations
                 };
             }
         }
+        #endregion
 
+        #region Обновить информацию об игре в базе данных
         public async Task<IBaseDbResponse<bool>> Update(GameViewModel entity)
         {
+            Game newGame = _mapper.Map<Game>(entity);
+
             ForGameViewModelData data = new ForGameViewModelData(entity, _dbContext);
 
-            var gameViewModel = entity;
+            var developer = await data.GetDeveloper();
+            newGame.Developer = developer;
 
-            gameViewModel.Developer = await data.GetDeveloper();
-
-            gameViewModel.Genres = data.GetGenresList();
-
-            var baseResponse = new BaseDbResponse<bool>();
-
-            Game newGame = _mapper.Map<Game>(gameViewModel);
+            var genres = data.GetGenresList();
+            newGame.Genres = genres;
 
             Game updatingGame = await _gameRepository.Get(newGame.Id);
 
@@ -153,6 +149,8 @@ namespace GamesDB.WebApi.Service.Implementations
                 updatingGame.Developer = newGame.Developer;
                 updatingGame.Genres = newGame.Genres;
             }
+
+            var baseResponse = new BaseDbResponse<bool>();
 
             try
             {
@@ -170,7 +168,9 @@ namespace GamesDB.WebApi.Service.Implementations
             }
             return baseResponse;
         }
+        #endregion
 
+        #region Удалить информацию об игре из базы данных
         public async Task<IBaseDbResponse<bool>> Delete(int id)
         {
             var baseResponse = new BaseDbResponse<bool>();
@@ -201,7 +201,9 @@ namespace GamesDB.WebApi.Service.Implementations
                 };
             }
         }
+        #endregion
 
+        #region Получить список игр из базы данных в соответствии с жанром
         public async Task<IBaseDbResponse<IEnumerable<GameResponse>>> GetByGenre(int genreId)
         {
             var baseResponse = new BaseDbResponse<IEnumerable<GameResponse>>();
@@ -239,5 +241,6 @@ namespace GamesDB.WebApi.Service.Implementations
                 };
             }
         }
+        #endregion
     }
 }

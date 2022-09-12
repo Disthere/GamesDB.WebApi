@@ -1,15 +1,9 @@
 ﻿using AutoMapper;
-using GamesDB.WebApi.Domain.Entities.GamesAggregate;
 using GamesDB.WebApi.Domain.Enums;
-using GamesDB.WebApi.Service.Implementations;
 using GamesDB.WebApi.Service.Interfaces;
 using GamesDB.WebApi.Service.ViewModels.HttpQuerys;
 using GamesDB.WebApi.Service.ViewModels.GameAggregateViewModels;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GamesDB.WebApi.Controllers
@@ -36,8 +30,7 @@ namespace GamesDB.WebApi.Controllers
                 return new ObjectResult(response.Data);
             }
 
-            //return BadRequest();
-            return RedirectToAction("Error");
+            return BadRequest();
         }
 
 

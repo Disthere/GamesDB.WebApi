@@ -1,36 +1,29 @@
 ﻿using AutoMapper;
 using GamesDB.WebApi.DAL;
 using GamesDB.WebApi.DAL.Interfaces;
-using GamesDB.WebApi.DAL.Repositories;
-using GamesDB.WebApi.Domain.Entities;
 using GamesDB.WebApi.Domain.Entities.GamesAggregate;
 using GamesDB.WebApi.Domain.Enums;
 using GamesDB.WebApi.Domain.DbResponse;
 using GamesDB.WebApi.Service.Interfaces;
-using GamesDB.WebApi.Service.ViewModels;
 using GamesDB.WebApi.Service.ViewModels.GameAggregateViewModels;
-using GamesDB.WebApi.Service.ViewModels.GameAggregateViewModels.ForViewModelData;
 using GamesDB.WebApi.Service.ViewModels.HttpResponses;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GamesDB.WebApi.Service.Implementations
 {
     public class DeveloperService : IDeveloperService
     {
+        private readonly IMapper _mapper;
+        private readonly IDeveloperRepository _developerRepository;
+        private readonly GamesDbContext _dbContext;
 
         public DeveloperService(IDeveloperRepository developerRepository, IMapper mapper, GamesDbContext dbContext) =>
            (_developerRepository, _mapper, _dbContext) = (developerRepository, mapper, dbContext);
 
 
-        private readonly IMapper _mapper;
-        private readonly IDeveloperRepository _developerRepository;
-        private readonly GamesDbContext _dbContext;
-
-
+        #region Добавить нового разработчика в базу данных
         public async Task<IBaseDbResponse<bool>> Add(DeveloperViewModel entity)
         {
             var baseResponse = new BaseDbResponse<bool>();
@@ -53,8 +46,9 @@ namespace GamesDB.WebApi.Service.Implementations
             }
             return baseResponse;
         }
+        #endregion
 
-
+        #region Получить информацию о разработчике из базы данных
         public async Task<IBaseDbResponse<DeveloperResponse>> Get(int id)
         {
             var baseResponse = new BaseDbResponse<DeveloperResponse>();
@@ -84,7 +78,9 @@ namespace GamesDB.WebApi.Service.Implementations
                 };
             }
         }
+        #endregion
 
+        #region Получить список всех разработчиков из базы данных
         public async Task<IBaseDbResponse<IEnumerable<DeveloperResponse>>> GetAll()
         {
             var baseResponse = new BaseDbResponse<IEnumerable<DeveloperResponse>>();
@@ -122,7 +118,9 @@ namespace GamesDB.WebApi.Service.Implementations
                 };
             }
         }
+        #endregion
 
+        #region Обновить информацию о разработчике в базе данных
         public async Task<IBaseDbResponse<bool>> Update(DeveloperViewModel entity)
         {
             var baseResponse = new BaseDbResponse<bool>();
@@ -149,7 +147,9 @@ namespace GamesDB.WebApi.Service.Implementations
             }
             return baseResponse;
         }
+        #endregion
 
+        #region Удалить информацию о разработчике из базы данных
         public async Task<IBaseDbResponse<bool>> Delete(int id)
         {
             var baseResponse = new BaseDbResponse<bool>();
@@ -180,6 +180,6 @@ namespace GamesDB.WebApi.Service.Implementations
                 };
             }
         }
-
+        #endregion
     }
 }

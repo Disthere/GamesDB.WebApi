@@ -1,14 +1,15 @@
 ﻿using GamesDB.WebApi.DAL;
-using GamesDB.WebApi.DAL.Repositories;
+using GamesDB.WebApi.DAL.Repositories.GamesAggregate;
 using GamesDB.WebApi.Domain.Entities.GamesAggregate;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GamesDB.WebApi.Service.ViewModels.GameAggregateViewModels.ForViewModelData
 {
+    /// <summary>
+    /// Класс используется для получения объектов типов Genre (список) и Developer
+    /// при добавлении и обновлении в базе данных объектов типа Game
+    /// </summary>
     public class ForGameViewModelData
     {
         private GameViewModel _gameViewModel { get; set; }
@@ -19,11 +20,10 @@ namespace GamesDB.WebApi.Service.ViewModels.GameAggregateViewModels.ForViewModel
 
         public Task<Developer> GetDeveloper()
         {
-
             if (_gameViewModel.DeveloperId != null)
             {
                 int developerId = (int)_gameViewModel.DeveloperId;
-                var developer = new BaseRepository<Developer>(_dbContext).Get(developerId);
+                var developer = new DeveloperRepository(_dbContext).Get(developerId);
                 return developer;
             }
 
@@ -40,7 +40,7 @@ namespace GamesDB.WebApi.Service.ViewModels.GameAggregateViewModels.ForViewModel
             {
                 foreach (var genreId in genresIdsList)
                 {
-                    var genre = new BaseRepository<Genre>(_dbContext).Get(genreId).Result;
+                    var genre = new GenreRepository(_dbContext).Get(genreId).Result;
                     genresList.Add(genre);
                 }
             }

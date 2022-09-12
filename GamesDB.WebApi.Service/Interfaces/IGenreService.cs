@@ -1,11 +1,7 @@
-﻿using GamesDB.WebApi.Domain.Entities.GamesAggregate;
-using GamesDB.WebApi.Domain.DbResponse;
+﻿using GamesDB.WebApi.Domain.DbResponse;
 using GamesDB.WebApi.Service.ViewModels.GameAggregateViewModels;
 using GamesDB.WebApi.Service.ViewModels.HttpResponses;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GamesDB.WebApi.Service.Interfaces
