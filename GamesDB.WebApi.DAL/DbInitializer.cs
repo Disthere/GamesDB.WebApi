@@ -10,7 +10,7 @@ namespace GamesDB.WebApi.DAL
         public static void Initialize(GamesDbContext context)
         {
             //context.Database.EnsureDeleted();
-            context.Database.EnsureCreated();
+            //context.Database.EnsureCreated();
             AddInitialValues(context);
         }
 

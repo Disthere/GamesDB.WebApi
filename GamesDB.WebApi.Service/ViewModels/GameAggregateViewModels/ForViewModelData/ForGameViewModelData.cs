@@ -18,12 +18,12 @@ namespace GamesDB.WebApi.Service.ViewModels.GameAggregateViewModels.ForViewModel
         public ForGameViewModelData(GameViewModel gameViewModel, GamesDbContext dbContext) =>
              (_gameViewModel, _dbContext) = (gameViewModel, dbContext);
 
-        public Task<Developer> GetDeveloper()
+        public Developer GetDeveloper()
         {
             if (_gameViewModel.DeveloperId != null)
             {
                 int developerId = (int)_gameViewModel.DeveloperId;
-                var developer = new DeveloperRepository(_dbContext).Get(developerId);
+                var developer = new DeveloperRepository(_dbContext).Get(developerId).Result;
                 return developer;
             }
 

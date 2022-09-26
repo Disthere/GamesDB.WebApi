@@ -30,7 +30,7 @@ namespace GamesDB.WebApi.Service.Implementations
 
             ForGameViewModelData data = new(entity, _dbContext);
 
-            var developer = await data.GetDeveloper();
+            var developer = data.GetDeveloper();
             addingGame.Developer = developer;
 
             var genres = data.GetGenresList();
@@ -135,7 +135,7 @@ namespace GamesDB.WebApi.Service.Implementations
 
             ForGameViewModelData data = new ForGameViewModelData(entity, _dbContext);
 
-            var developer = await data.GetDeveloper();
+            var developer = data.GetDeveloper();
             newGame.Developer = developer;
 
             var genres = data.GetGenresList();
