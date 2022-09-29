@@ -23,6 +23,8 @@ namespace GamesDB.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpsRedirection(options => options.HttpsPort = 44392);
+
             services.AddSqliteDbConnection(Configuration);
 
             services.AddAutoMapper(typeof(GamesMappingProfile));
