@@ -23,14 +23,12 @@ namespace GamesDB.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddHttpsRedirection(options => options.HttpsPort = 44392);
-
             services.AddSqliteDbConnection(Configuration);
 
             services.AddAutoMapper(typeof(GamesMappingProfile));
 
             services.AddServiceInjection();
-                        
+
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -47,7 +45,7 @@ namespace GamesDB.WebApi
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseHttpsRedirection();
-            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

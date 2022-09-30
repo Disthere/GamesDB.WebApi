@@ -127,24 +127,32 @@ namespace GamesDB.WebApi.Service.Implementations
 
             Developer updatingDeveloper = await _developerRepository.Get(entity.Id);
 
+            if (updatingDeveloper != null)
             {
-                updatingDeveloper.Name = entity.Name;
+                try
+                {
+                    {
+                        updatingDeveloper.Name = entity.Name;
+                    }
+
+                    await _developerRepository.Update(updatingDeveloper);
+                    baseResponse.Data = true;
+                    baseResponse.StatusCode = RequestToDbErrorStatusCode.Success;
+                }
+                catch (Exception ex)
+                {
+                    return new BaseDbResponse<bool>()
+                    {
+                        Description = $"[Update] : {ex.Message}",
+                        StatusCode = RequestToDbErrorStatusCode.InternalServerError
+                    };
+                }
+            }
+            else
+            { 
+                baseResponse.StatusCode = RequestToDbErrorStatusCode.NotFound; 
             }
 
-            try
-            {
-                await _developerRepository.Update(updatingDeveloper);
-                baseResponse.Data = true;
-                baseResponse.StatusCode = RequestToDbErrorStatusCode.Success;
-            }
-            catch (Exception ex)
-            {
-                return new BaseDbResponse<bool>()
-                {
-                    Description = $"[Update] : {ex.Message}",
-                    StatusCode = RequestToDbErrorStatusCode.InternalServerError
-                };
-            }
             return baseResponse;
         }
         #endregion

@@ -14,8 +14,8 @@ namespace GamesDB.WebApi.Service.ViewModels.HttpResponses
             this.DeveloperId = game.DeveloperId;
             this.Genres = new List<string>();
             this.GenresIds = new List<int>();
-            GetDeveloper();
-            GetGenres();
+            InitializeDeveloper();
+            InitializeGenres();
         }
         private Game Game { get; set; }
         public int Id { get; set; }
@@ -25,12 +25,12 @@ namespace GamesDB.WebApi.Service.ViewModels.HttpResponses
         public ICollection<int> GenresIds { get; set; }
         public ICollection<string> Genres { get; set; }
 
-        private void GetDeveloper()
+        private void InitializeDeveloper()
         {
             this.Developer = Game.Developer?.Name;
         }
 
-        private void GetGenres()
+        private void InitializeGenres()
         {
             if (Game.Genres.Count != 0)
             {

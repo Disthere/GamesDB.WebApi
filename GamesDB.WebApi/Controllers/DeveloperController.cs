@@ -77,7 +77,7 @@ namespace GamesDB.WebApi.Controllers
                 return new ObjectResult(response.Data);
             }
 
-            return BadRequest();
+            return BadRequest(response.StatusCode.ToString());
         }
 
 

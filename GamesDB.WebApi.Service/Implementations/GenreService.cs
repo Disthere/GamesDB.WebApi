@@ -127,24 +127,30 @@ namespace GamesDB.WebApi.Service.Implementations
 
             Genre updatingGenre = await _genreRepository.Get(entity.Id);
 
+            if (updatingGenre != null)
             {
-                updatingGenre.Name = entity.Name;
-            }
-
-            try
-            {
-                await _genreRepository.Update(updatingGenre);
-                baseResponse.Data = true;
-                baseResponse.StatusCode = RequestToDbErrorStatusCode.Success;
-            }
-            catch (Exception ex)
-            {
-                return new BaseDbResponse<bool>()
                 {
-                    Description = $"[Update] : {ex.Message}",
-                    StatusCode = RequestToDbErrorStatusCode.InternalServerError
-                };
+                    updatingGenre.Name = entity.Name;
+                }
+
+                try
+                {
+                    await _genreRepository.Update(updatingGenre);
+                    baseResponse.Data = true;
+                    baseResponse.StatusCode = RequestToDbErrorStatusCode.Success;
+                }
+                catch (Exception ex)
+                {
+                    return new BaseDbResponse<bool>()
+                    {
+                        Description = $"[Update] : {ex.Message}",
+                        StatusCode = RequestToDbErrorStatusCode.InternalServerError
+                    };
+                }
             }
+            else
+                baseResponse.StatusCode=RequestToDbErrorStatusCode.NotFound;
+
             return baseResponse;
         }
         #endregion

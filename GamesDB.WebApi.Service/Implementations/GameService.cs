@@ -143,104 +143,112 @@ namespace GamesDB.WebApi.Service.Implementations
 
             Game updatingGame = await _gameRepository.Get(newGame.Id);
 
-            {
-                updatingGame.Title = newGame.Title;
-                updatingGame.DeveloperId = newGame.DeveloperId;
-                updatingGame.Developer = newGame.Developer;
-                updatingGame.Genres = newGame.Genres;
-            }
-
             var baseResponse = new BaseDbResponse<bool>();
 
-            try
+            if (updatingGame != null && genres != null)
             {
-                await _gameRepository.Update(updatingGame);
-                baseResponse.Data = true;
-                baseResponse.StatusCode = RequestToDbErrorStatusCode.Success;
-            }
-            catch (Exception ex)
-            {
-                return new BaseDbResponse<bool>()
                 {
-                    Description = $"[Update] : {ex.Message}",
-                    StatusCode = RequestToDbErrorStatusCode.InternalServerError
-                };
+                    updatingGame.Title = newGame.Title;
+                    updatingGame.DeveloperId = newGame.DeveloperId;
+                    updatingGame.Developer = newGame.Developer;
+                    updatingGame.Genres = newGame.Genres;
+                }
+
+                try
+                {
+                    await _gameRepository.Update(updatingGame);
+                    baseResponse.Data = true;
+                    baseResponse.StatusCode = RequestToDbErrorStatusCode.Success;
+                }
+                catch (Exception ex)
+                {
+                    return new BaseDbResponse<bool>()
+                    {
+                        Description = $"[Update] : {ex.Message}",
+                        StatusCode = RequestToDbErrorStatusCode.InternalServerError
+                    };
+                }
             }
+            else
+            {
+                baseResponse.StatusCode = RequestToDbErrorStatusCode.NotFound;
+            }
+                
             return baseResponse;
-        }
-        #endregion
+            }
+            #endregion
 
-        #region Удалить информацию об игре из базы данных
-        public async Task<IBaseDbResponse<bool>> Delete(int id)
-        {
-            var baseResponse = new BaseDbResponse<bool>();
-
-            try
+            #region Удалить информацию об игре из базы данных
+            public async Task<IBaseDbResponse<bool>> Delete(int id)
             {
-                var deletingGame = await _gameRepository.Get(id);
+                var baseResponse = new BaseDbResponse<bool>();
 
-                if (deletingGame == null)
+                try
                 {
-                    baseResponse.Description = "Object not found";
-                    baseResponse.StatusCode = RequestToDbErrorStatusCode.NotFound;
+                    var deletingGame = await _gameRepository.Get(id);
+
+                    if (deletingGame == null)
+                    {
+                        baseResponse.Description = "Object not found";
+                        baseResponse.StatusCode = RequestToDbErrorStatusCode.NotFound;
+                        return baseResponse;
+                    }
+
+                    await _gameRepository.Delete(deletingGame);
+                    baseResponse.Data = true;
+                    baseResponse.StatusCode = RequestToDbErrorStatusCode.Success;
+
                     return baseResponse;
                 }
-
-                await _gameRepository.Delete(deletingGame);
-                baseResponse.Data = true;
-                baseResponse.StatusCode = RequestToDbErrorStatusCode.Success;
-
-                return baseResponse;
-            }
-            catch (Exception ex)
-            {
-                return new BaseDbResponse<bool>()
+                catch (Exception ex)
                 {
-                    Description = $"[Delete] : {ex.Message}",
-                    StatusCode = RequestToDbErrorStatusCode.InternalServerError,
-                };
+                    return new BaseDbResponse<bool>()
+                    {
+                        Description = $"[Delete] : {ex.Message}",
+                        StatusCode = RequestToDbErrorStatusCode.InternalServerError,
+                    };
+                }
             }
-        }
-        #endregion
+            #endregion
 
-        #region Получить список игр из базы данных в соответствии с жанром
-        public async Task<IBaseDbResponse<IEnumerable<GameResponse>>> GetByGenre(int genreId)
-        {
-            var baseResponse = new BaseDbResponse<IEnumerable<GameResponse>>();
-
-            try
+            #region Получить список игр из базы данных в соответствии с жанром
+            public async Task<IBaseDbResponse<IEnumerable<GameResponse>>> GetByGenre(int genreId)
             {
-                var games = await _gameRepository.GetByGenre(genreId);
+                var baseResponse = new BaseDbResponse<IEnumerable<GameResponse>>();
 
-                if (games == null)
+                try
                 {
-                    baseResponse.Description = "Найдено 0 элементов";
-                    baseResponse.StatusCode = RequestToDbErrorStatusCode.NotFound;
+                    var games = await _gameRepository.GetByGenre(genreId);
+
+                    if (games == null)
+                    {
+                        baseResponse.Description = "Найдено 0 элементов";
+                        baseResponse.StatusCode = RequestToDbErrorStatusCode.NotFound;
+                        return baseResponse;
+                    }
+
+                    var gameResponses = new List<GameResponse>();
+
+                    foreach (var game in games)
+                    {
+                        gameResponses.Add(new GameResponse(game));
+                    }
+
+                    baseResponse.Data = gameResponses;
+
+                    baseResponse.StatusCode = RequestToDbErrorStatusCode.Success;
+
                     return baseResponse;
                 }
-
-                var gameResponses = new List<GameResponse>();
-
-                foreach (var game in games)
+                catch (Exception ex)
                 {
-                    gameResponses.Add(new GameResponse(game));
+                    return new BaseDbResponse<IEnumerable<GameResponse>>()
+                    {
+                        Description = $"[GetAllGames] : {ex.Message}",
+                        StatusCode = RequestToDbErrorStatusCode.InternalServerError
+                    };
                 }
-
-                baseResponse.Data = gameResponses;
-
-                baseResponse.StatusCode = RequestToDbErrorStatusCode.Success;
-
-                return baseResponse;
             }
-            catch (Exception ex)
-            {
-                return new BaseDbResponse<IEnumerable<GameResponse>>()
-                {
-                    Description = $"[GetAllGames] : {ex.Message}",
-                    StatusCode = RequestToDbErrorStatusCode.InternalServerError
-                };
-            }
+            #endregion
         }
-        #endregion
     }
-}
