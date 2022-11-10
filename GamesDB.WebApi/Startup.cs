@@ -1,4 +1,6 @@
 using GamesDB.WebApi.DAL;
+using GamesDB.WebApi.DAL.Common.Mappings;
+using GamesDB.WebApi.DAL.Interfaces;
 using GamesDB.WebApi.Service;
 using GamesDB.WebApi.Service.Mapping;
 using Microsoft.AspNetCore.Builder;
@@ -7,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-
+using System.Reflection;
 
 namespace GamesDB.WebApi
 {
@@ -25,7 +27,15 @@ namespace GamesDB.WebApi
         {
             services.AddSqliteDbConnection(Configuration);
 
-            services.AddAutoMapper(typeof(GamesMappingProfile));
+            services.AddMediatR();
+
+            services.AddAutoMapper(config =>
+            {
+                config.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
+                config.AddProfile(new AssemblyMappingProfile(typeof(IGamesDbContext).Assembly));
+            });
+
+            //services.AddAutoMapper(typeof(GamesMappingProfile));
 
             services.AddServiceInjection();
 

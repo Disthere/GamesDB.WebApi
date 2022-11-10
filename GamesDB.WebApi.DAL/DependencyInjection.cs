@@ -1,7 +1,9 @@
 ﻿using GamesDB.WebApi.DAL.Interfaces;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 
@@ -30,6 +32,13 @@ namespace GamesDB.WebApi.DAL
                 options.UseSqlServer(connectionString));
             services.AddScoped<IGamesDbContext>(provider =>
             provider.GetService<GamesDbContext>());
+            return services;
+        }
+
+        public static IServiceCollection AddMediatR(this IServiceCollection
+            services)
+        {
+            services.AddMediatR(Assembly.GetExecutingAssembly());
             return services;
         }
     }
